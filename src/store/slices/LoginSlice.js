@@ -15,7 +15,9 @@ const initialState = {
     avatar: '',
     password: '',
     password_check: ''
-  }
+  },
+  loadingRegister: false,
+  loadingSignup: false
 }
 
 export const loginSlice = createSlice({
@@ -35,9 +37,15 @@ export const loginSlice = createSlice({
     changeFormRegister: (state, action) => {
       const { element, value } = action.payload
       state.registerForm[element] = value
+    },
+    changeLoadingRegister: (state, action) => {
+      state.loadingRegister = action.payload
+    },
+    changeLoadingSignup: (state, action) => {
+      state.loadingSignup = action.payload
     }
   }
 })
 
-export const { login, signup, changeFormRegister, changeFormSignUp } = loginSlice.actions
+export const { login, signup, changeFormRegister, changeFormSignUp, changeLoadingRegister, changeLoadingSignup } = loginSlice.actions
 export default loginSlice.reducer
