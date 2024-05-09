@@ -165,6 +165,10 @@ function HomePage () {
 }
 // Para cada registro se podria hacer un grafico de lineas para saber los ingresos y egresos totales , incluso se podria
 // hacer uno para el dashboard general
+// Añadir apenas abris una cuenta el importe con el cual se abre esa cuenta, y la descripcion de la cuenta/registro esto iria a la tabla registro de la base de datos
 // Añadir una seccion de gastos fijos e ingresos fijos, y automatizarlo por fecha
+// Añadir una diferentes formas de pago
+// Añadir ultimos ingresos/egresos para cada registro/cuenta
+// Tendencia del Saldo (Grafico de lineas ,que posee la informacion de ccomo fue creciendo o decreciendo el dinero inicial de la cuenta)
 
 export default HomePage
