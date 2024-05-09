@@ -52,7 +52,7 @@ function ModalIngresoEgreso ({ categorias, selected, cerrarModal }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const body = {
-      id_registro: actualRegistro,
+      id_registro: actualRegistro.id,
       monto: ingresoEgreso.monto,
       descripcion: ingresoEgreso.descripcion,
       fecha: Date.now(),
@@ -66,8 +66,6 @@ function ModalIngresoEgreso ({ categorias, selected, cerrarModal }) {
       document.location.reload()
     }
   }
-
-  console.log(ingresoEgreso)
   return (
   <section id="modal-container" className="d-flex justify-content-center align-items-center">
     <div id="modal">

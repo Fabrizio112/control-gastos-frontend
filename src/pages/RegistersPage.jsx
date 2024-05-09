@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom'
 import { changeLoader } from '../store/slices/LoaderSlice'
 import Loader from '../components/Varios/Loader'
 import ReactECharts from 'echarts-for-react'
+import { right } from '@popperjs/core'
 
 function DashBoardPage () {
   const [optionForGraphs, setOptionForGraphs] = useState([])
@@ -78,35 +79,52 @@ function DashBoardPage () {
           for (const registro of registers) {
             const option = {
               title: {
-                text: `Registro Nro ${registro.id} `,
+                text: `${registro.nombre} `,
                 subtext: 'Resumen de tus cuentas',
-                left: 'center'
+                left: 'left'
               },
               tooltip: {
                 trigger: 'item'
               },
               legend: {
                 orient: 'vertical',
-                left: 'left'
+                left: 10,
+                top: 'center'
               },
               series: [
                 {
                   name: 'Access From',
                   type: 'pie',
-                  radius: '50%',
-                  data: [],
+                  radius: ['40%', '70%'],
+                  avoidLabelOverlap: false,
+                  itemStyle: {
+                    borderRadius: 10,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                  },
+                  label: {
+                    show: false,
+                    position: 'center'
+                  },
                   emphasis: {
-                    itemStyle: {
-                      shadowBlur: 10,
-                      shadowOffsetX: 0,
-                      shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    label: {
+                      show: true,
+                      fontSize: 20,
+                      fontWeight: 'bold'
                     }
-                  }
+                  },
+                  labelLine: {
+                    show: false
+                  },
+                  data: [
+                    { value: registro.fondos, name: 'Fondo Inicial' }
+                  ]
                 }
               ]
             }
             const ingresos = await getIngresos(registro.id)
             const egresos = await getEgresos(registro.id)
+            acumuladorIngresos += registro.fondos
             if (ingresos !== '' || ingresos !== undefined) {
               for (const ingreso of ingresos) {
                 acumuladorIngresos += ingreso.monto
@@ -130,11 +148,11 @@ function DashBoardPage () {
       getTotalRegisters()
     }
   }, [registers])
-  const handleChangeRegisterSelected = (id) => {
-    dispatch(changeActualRegister(id))
-    window.sessionStorage.setItem('actual_registro', id)
+
+  const handleChangeRegisterSelected = (el) => {
+    dispatch(changeActualRegister(el))
+    window.sessionStorage.setItem('actual_registro', JSON.stringify(el))
   }
-  console.log(optionForGraphs)
   return (
   <>
   {loader && <Loader/>}
@@ -147,7 +165,7 @@ function DashBoardPage () {
 
     </div>
     <div>
-    {(registers && optionForGraphs.length === registers.length) && registers.map(el => <div key={el.id}>  {optionForGraphs && optionForGraphs.map(element => (el.id === element.id) && <ReactECharts key={el.id} option={element.option}/>)} <NavLink className='btn btn-outline-primary' onClick={() => handleChangeRegisterSelected(el.id)} to={`/registros/${el.id}`}>Ir al Registro</NavLink></div>)}
+    {(registers && optionForGraphs.length === registers.length) && registers.map(el => <div key={el.id}>  {optionForGraphs && optionForGraphs.map(element => (el.id === element.id) && <ReactECharts key={el.id} option={element.option}/>)} <NavLink className='btn btn-outline-primary' onClick={() => handleChangeRegisterSelected(el)} to={`/registros/${el.id}`}>Ir al Registro</NavLink></div>)}
     </div>
 
   </section>

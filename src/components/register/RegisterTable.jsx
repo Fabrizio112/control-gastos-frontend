@@ -1,6 +1,6 @@
 function RegisterTable ({ valor }) {
   return (
-<div className="border border-black rounded-4 px-4">
+<div className="border border-black rounded-4 px-4 mt-4">
   <table className="table table-borderless mt-4">
     <thead>
         <tr>

@@ -21,7 +21,7 @@ function RegisterSpecific () {
   const loader = useSelector(state => state.loader)
   useEffect(() => {
     if (register === '') {
-      dispatch(changeActualRegister(window.sessionStorage.getItem('actual_registro')))
+      dispatch(changeActualRegister(JSON.parse(window.sessionStorage.getItem('actual_registro'))))
     }
     async function getCategories () {
       try {
@@ -68,8 +68,8 @@ function RegisterSpecific () {
       try {
         let acumuladorEgresos = 0
         let acumuladorIngresos = 0
-        const ingresos = await getIngresos(register)
-        const egresos = await getEgresos(register)
+        const ingresos = await getIngresos(register.id)
+        const egresos = await getEgresos(register.id)
         if (ingresos !== '' || ingresos !== undefined) {
           for (const ingreso of ingresos) {
             acumuladorIngresos += ingreso.monto
@@ -104,8 +104,8 @@ function RegisterSpecific () {
   {modal && <ModalIngresoEgreso categorias={categorias} selected={actualSelected} cerrarModal={setModal}/>}
     <NavBar username={JSON.parse(window.sessionStorage.getItem('usuario'))?.username}/>
     <section className='container-page'>
-        <h1 className='text-center py-2'>Registro Nro {register}</h1>
-        <p className='fs-2 text-center mb-4'>$ {montos.ingresos - montos.egresos}</p>
+        <h1 className='text-center py-2'>{register.nombre}</h1>
+        <p className='fs-2 text-center mb-4'>$ {(register.fondos + montos.ingresos) - montos.egresos}</p>
         <div className='d-flex gap-3'>
             <button className='btn btn-success w-50'onClick={() => setActualSelected('ingresos')}>Ingresos</button>
             <button className='btn btn-danger w-50' onClick={() => setActualSelected('egresos')}>Egresos</button>

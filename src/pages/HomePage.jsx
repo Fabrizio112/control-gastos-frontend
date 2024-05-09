@@ -6,9 +6,11 @@ import { changeLoader } from '../store/slices/LoaderSlice'
 import { changeActualRegister, changeAllRegisters } from '../store/slices/RegisterSlice'
 import Loader from '../components/Varios/Loader'
 import { NavLink } from 'react-router-dom'
+import ModalRegistro from '../components/Varios/ModalRegistro'
 
 function HomePage () {
   const [allIngresosEgresos, setAllIngresosEgresos] = useState({ ingresos: '', egresos: '' })
+  const [openModal, setOpenModal] = useState(false)
   const user = useSelector(state => state.user)
   const loader = useSelector(state => state.loader)
   const registers = useSelector(state => state.register.allRegisters)
@@ -84,17 +86,14 @@ function HomePage () {
     registro(user.email)
   }, [user])
 
-  async function crearNuevoRegistro (correo) {
+  async function crearNuevoRegistro (body) {
     try {
-      const bodyFinal = {
-        email: correo
-      }
       const options = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(bodyFinal)
+        body: JSON.stringify(body)
       }
       const peticion = await fetch('http://localhost:5000/registro', options)
       const registro = await peticion.json()
@@ -103,10 +102,10 @@ function HomePage () {
       console.error(error)
     }
   }
-  const handleNewRegister = () => {
+  const handleNewRegister = (body) => {
     async function crear () {
       try {
-        const registro = await crearNuevoRegistro(user.email)
+        const registro = await crearNuevoRegistro(body)
         document.location.reload()
       } catch (error) {
         console.error(error)
@@ -115,13 +114,14 @@ function HomePage () {
     crear()
   }
 
-  const handleChangeRegisterSelected = (id) => {
-    dispatch(changeActualRegister(id))
-    window.sessionStorage.setItem('actual_registro', id)
+  const handleChangeRegisterSelected = (el) => {
+    dispatch(changeActualRegister(el))
+    window.sessionStorage.setItem('actual_registro', JSON.stringify(el))
   }
   return (
   <>
   {loader && <Loader/>}
+  {openModal && <ModalRegistro nuevoRegistro={handleNewRegister} cerrarModal={setOpenModal} email={user.email}/>}
     <NavBar username={user?.username}/>
     <div className='container-page'>
         <h1 className='text-center p-4'>Hola {user?.nombre} {user?.apellido} , bienvenido de nuevo !!!</h1>
@@ -129,14 +129,14 @@ function HomePage () {
         <h2 className='mb-4'>Resumen de tus registros:</h2>
         <section>
         <div className='text-center mb-4'>
-            <button className='btn btn-primary px-5 py-2' onClick={handleNewRegister}>Crear nuevo Registro</button>
+            <button className='btn btn-primary px-5 py-2' onClick={() => setOpenModal(true)}>Crear nuevo Registro</button>
           </div>
           <div className='row w-100 px-3'>
             {registers && registers.map(el => <div key={el.id} className="card col-6">
     <img src="..." className="card-img-top" alt="..."/>
 
     <div className="card-body">
-      <NavLink className='btn btn-outline-primary' onClick={() => handleChangeRegisterSelected(el.id)} to={`/registros/${el.id}`}>Ir al Registro</NavLink>
+      <NavLink className='btn btn-outline-primary' onClick={() => handleChangeRegisterSelected(el)} to={`/registros/${el.id}`}>Ir al Registro</NavLink>
     </div>
             </div>)}
           </div>
